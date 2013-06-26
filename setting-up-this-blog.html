@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="">	
+<head>
+	<meta charset="utf-8"/>
+	<title>Setting up this blog - KaChon's Notes</title>	
+	<meta name="author" content="KaChon Lei">
+	
+	<meta name="HandheldFriendly" content="True">
+	<meta name="MobileOptimized" content="320">
+	<meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0">
+	
+	<link href='http://fonts.googleapis.com/css?family=Droid+Sans:700,400|Droid+Sans+Mono' rel='stylesheet' type='text/css'>
+	<link rel="stylesheet" href="/theme/css/main.css" type="text/css" />
+	<link rel="stylesheet" href="/theme/css/slate.css" />		
+	<!--[if lt IE 9]>
+		<script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+	
+			
+	<link href="/" type="application/atom+xml" rel="alternate" title="KaChon's Notes ATOM Feed" />
+	</head>
+	
+<body>		
+	<header class="clearfix" role="banner">
+		<div class="wrapper">
+			<h1 class="huge"><a href="">KaChon's Notes</a></h1>
+		</div>
+	</header>
+	
+	<div role="main" class="content clearfix">	
+	<article>
+		<div class="post wrapper">
+			<h1>Setting up this blog</h1>
+			<p>I have been thinking about setting up a blog to track and share what I have learned recently.  So I look around to see where I should host my blog.  There are lots of platforms out there, like Wordpress, Tumblr, and LiveJournal.  However, I just need a simple one and probably a static one is fine for me.  And then I notice <a href="http://github.com">github</a> provided a place where I could host a static page.  So I decide to try it out.  </p>
+<p>So here is my first post.  About how I set up this blog!</p>
+<p><strong>A.</strong>  Setup a repository in github with the syntax <strong><em>username.github.io</em></strong>.  For me, my repository is this <a href="http://kachon.github.io">kachon.github.io</a>.  Once the repository is setup.  I just need to push the html file onto the server and everything will be done.</p>
+<p><strong>B.</strong>  Use <a href="http://python.org">Python</a> and <a href="http://blog.getpelican.com/">Pelican</a> to generate the static html page.  Github have some examples about using <a href="http://jekyllrb.com/">jekyll</a> to create the static webpage.  However, I am not that familar with Ruby.  Therefore, it is easier for me to use <a href="http://blog.getpelican.com/">Pelican</a> instead. </p>
+<p>To create a virtual environment for Python  </p>
+<div class="highlight"><pre><span class="nv">$ </span>virtualenv ~virt_env/pelican
+<span class="nv">$ </span><span class="nb">cd</span> ~/virt_env/pelican
+<span class="nv">$ </span>. bin/activate
+</pre></div>
+
+
+<p>To install Pelican and <a href="http://daringfireball.net/projects/markdown">Markdown</a> (a text to HTML conversion tool)</p>
+<div class="highlight"><pre><span class="nv">$ </span>pip install -e git://github.com/getpelican/pelican#egg<span class="o">=</span>pelican
+<span class="nv">$ </span>pip install Markdown
+</pre></div>
+
+
+<p>After installing Pelican and Markdown.  I am ready to write my content.</p>
+<p><strong>C.</strong>  Use pelican-quickstart to setup the skeleton</p>
+<p>Issue pelican-quickstart</p>
+<div class="highlight"><pre><span class="nv">$ </span>pelican-quickstart
+</pre></div>
+
+
+<p>After executing this command and answering some questions, my file system will have something like this:</p>
+<div class="highlight"><pre>--/content
+--develop_server.sh
+--Makefile
+--pelicanconf.py
+...
+</pre></div>
+
+
+<p>The content of the blog will be stored in content folder and pelicanconf.py is used to control how to generate the static page.  For example, I have created a Markdown file called <strong><em>2013-06-24-setting-up-this-blog.md</em></strong> under the content folder for this first blog. </p>
+<p><strong>D.</strong>  Install pelican-themes</p>
+<p>To make the blog looks nicer, I choose to use <strong><em>Just-Read</em></strong> themes.  However, I prefer to use another <a href="https://github.com/uraimo/pygments-vimstyles">css</a> for syntax highlighting.  So I decide to fork it and create my own repository <a href="https://github.com/kachon/pelican-themes">pelican-themes</a>. </p>
+<p>To install the theme</p>
+<div class="highlight"><pre><span class="nv">$ </span>pelican-themes -i pelican-themes/Just-Read
+</pre></div>
+
+
+<p>And add the following line to pelicanconf.py</p>
+<div class="highlight"><pre><span class="n">THEME</span> <span class="o">=</span> <span class="s">&#39;Just-Read&#39;</span>
+</pre></div>
+
+
+<p><strong>E.</strong>  Create the output and push to github</p>
+<p>The last step is to create the output folder and output the whole directory to github.</p>
+<div class="highlight"><pre><span class="nv">$ </span>pelican -s pelicanconf.py ./content -o ../output
+</pre></div>
+
+
+<p>And then push the output directory to github.</p>
+<p>Done!</p>
+			
+			<a href="https://twitter.com/share" class="twitter-share-button" data-via="" data-lang="en" data-size="large" data-related="">Tweet</a>
+			<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+						
+						
+		</div>
+	
+	<div class="meta wrapper">
+	<time datetime="2013-06-24T00:00:00" pubdate>Mon 24 June 2013</time>
+	<ul class="tag clearfix">
+		<li><a href="/category/pelican.html">Pelican</a></li>
+			<li><a href="/tag/pelican.html">Pelican</a></li>
+			<li><a href="/tag/github.html">github</a></li>
+			<li><a href="/tag/git.html">git</a></li>
+		</ul>
+	</div>	</article>	
+</div>
+	
+		
+<footer class="clearfix">
+	<div class="wrapper pages">
+		<ul class="nav">
+					<li><a href="/pages/about-me.html">About me</a></li>
+					<li><a href="/archives.html">Archive</a></li>
+		</ul>
+	</div>
+	
+	<div class="copy wrapper">
+		<ul class="social">
+						<li><a href="http://github.com/kachon">GitHub</a></li>
+						<li><a href="https://twitter.com/kachon_lei">Twitter</a></li>
+					</ul>
+	
+		<p role="contentinfo">© 2012 KaChon Lei<br>
+		Proudly powered by <a href="http://alexis.notmyidea.org/pelican/">Pelican</a>.</p>
+	</div>
+</footer>
+	
+	<script>
+	  var _gaq=[['_setAccount',''],['_trackPageview']];
+	  (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+	  g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+	  s.parentNode.insertBefore(g,s)}(document,'script'));
+	</script>
+</body>
+</html>
