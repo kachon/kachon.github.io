@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="">	
+<head>
+	<meta charset="utf-8"/>
+	<title>Python Static Variables - KaChon's Notes</title>	
+	<meta name="author" content="KaChon Lei">
+	
+	<meta name="HandheldFriendly" content="True">
+	<meta name="MobileOptimized" content="320">
+	<meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0">
+	
+	<link href='http://fonts.googleapis.com/css?family=Droid+Sans:700,400|Droid+Sans+Mono' rel='stylesheet' type='text/css'>
+	<link rel="stylesheet" href="/theme/css/main.css" type="text/css" />
+	<link rel="stylesheet" href="/theme/css/slate.css" />		
+	<!--[if lt IE 9]>
+		<script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+	
+			
+	<link href="/" type="application/atom+xml" rel="alternate" title="KaChon's Notes ATOM Feed" />
+	</head>
+	
+<body>		
+	<header class="clearfix" role="banner">
+		<div class="wrapper">
+			<h1 class="huge"><a href="">KaChon's Notes</a></h1>
+		</div>
+	</header>
+	
+	<div role="main" class="content clearfix">	
+	<article>
+		<div class="post wrapper">
+			<h1>Python Static Variables</h1>
+			<p>To delcare a static variable in Python.  Delcare it outside the <strong>init</strong> method.</p>
+<div class="highlight"><pre><span class="k">class</span> <span class="nc">TestClass1</span><span class="p">:</span>
+    <span class="n">class_prop</span> <span class="o">=</span> <span class="mi">111</span>
+
+<span class="k">print</span> <span class="n">TestClass1</span><span class="o">.</span><span class="n">class_prop</span> <span class="o">---&gt;</span> <span class="mi">111</span>
+</pre></div>
+
+
+<p>To delcare a static function in Python.  Delcare a function with a @staticmethod decorator.</p>
+<div class="highlight"><pre><span class="k">class</span> <span class="nc">TestClass1</span><span class="p">:</span>
+    <span class="n">class_prop</span> <span class="o">=</span> <span class="mi">111</span>
+
+    <span class="nd">@staticmethod</span>
+        <span class="k">def</span> <span class="nf">print_class_prop</span><span class="p">():</span>
+        <span class="k">print</span> <span class="n">TestClass1</span><span class="o">.</span><span class="n">class_prop</span>
+
+<span class="k">print</span> <span class="n">TestClass1</span><span class="o">.</span><span class="n">print_class_prop</span><span class="p">()</span> <span class="o">---&gt;</span> <span class="mi">111</span>
+</pre></div>
+
+
+<p>Another way for implementing print_class_prop() is to use @classmethod decorator.  A function defined with @classmethod decorator will receive a cls argument.  This is useful when we have a inheritance situation.</p>
+<div class="highlight"><pre><span class="k">class</span> <span class="nc">TestClass1</span><span class="p">:</span>
+    <span class="n">class_prop</span> <span class="o">=</span> <span class="mi">111</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">print_class_prop</span><span class="p">(</span><span class="n">cls</span><span class="p">):</span>
+        <span class="k">print</span> <span class="n">cls</span><span class="o">.</span><span class="n">class_prop</span>
+
+<span class="k">class</span> <span class="nc">TestClass2</span><span class="p">:</span>
+    <span class="n">class_prop</span> <span class="o">=</span> <span class="mi">222</span>
+
+<span class="k">print</span> <span class="n">TestClass1</span><span class="o">.</span><span class="n">print_class_prop</span><span class="p">()</span> <span class="o">---&gt;</span> <span class="mi">111</span>    
+<span class="k">print</span> <span class="n">TestClass2</span><span class="o">.</span><span class="n">print_class_prop</span><span class="p">()</span> <span class="o">---&gt;</span> <span class="mi">222</span>
+</pre></div>
+			
+			<a href="https://twitter.com/share" class="twitter-share-button" data-via="" data-lang="en" data-size="large" data-related="">Tweet</a>
+			<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+						
+						
+		</div>
+	
+	<div class="meta wrapper">
+	<time datetime="2013-06-30T00:00:00" pubdate>Sun 30 June 2013</time>
+	<ul class="tag clearfix">
+		<li><a href="/category/python.html">Python</a></li>
+			<li><a href="/tag/python.html">Python</a></li>
+		</ul>
+	</div>	</article>	
+</div>
+	
+		
+<footer class="clearfix">
+	<div class="wrapper pages">
+		<ul class="nav">
+					<li><a href="/pages/about-me.html">About me</a></li>
+					<li><a href="/archives.html">Archive</a></li>
+		</ul>
+	</div>
+	
+	<div class="copy wrapper">
+		<ul class="social">
+						<li><a href="http://github.com/kachon">GitHub</a></li>
+						<li><a href="https://twitter.com/kachon_lei">Twitter</a></li>
+					</ul>
+	
+		<p role="contentinfo">© 2012 KaChon Lei<br>
+		Proudly powered by <a href="http://alexis.notmyidea.org/pelican/">Pelican</a>.</p>
+	</div>
+</footer>
+	
+	<script>
+	  var _gaq=[['_setAccount',''],['_trackPageview']];
+	  (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+	  g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+	  s.parentNode.insertBefore(g,s)}(document,'script'));
+	</script>
+</body>
+</html>
