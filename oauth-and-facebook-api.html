@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="">	
+<head>
+	<meta charset="utf-8"/>
+	<title>OAuth and facebook api - KaChon's Notes</title>	
+	<meta name="author" content="KaChon Lei">
+	
+	<meta name="HandheldFriendly" content="True">
+	<meta name="MobileOptimized" content="320">
+	<meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0">
+	
+	<link href='http://fonts.googleapis.com/css?family=Droid+Sans:700,400|Droid+Sans+Mono' rel='stylesheet' type='text/css'>
+	<link rel="stylesheet" href="/theme/css/main.css" type="text/css" />
+	<link rel="stylesheet" href="/theme/css/slate.css" />		
+	<!--[if lt IE 9]>
+		<script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+	
+			
+	<link href="/" type="application/atom+xml" rel="alternate" title="KaChon's Notes ATOM Feed" />
+	</head>
+	
+<body>		
+	<header class="clearfix" role="banner">
+		<div class="wrapper">
+			<h1 class="huge"><a href="">KaChon's Notes</a></h1>
+		</div>
+	</header>
+	
+	<div role="main" class="content clearfix">	
+	<article>
+		<div class="post wrapper">
+			<h1>OAuth and facebook api</h1>
+			<p>Facebook, Twitter, and a lot of other companies are opening up their api and let more developers to leverage their service and build more apps on their platform.  Third party developers (like me) could access the user information through OAuth authentication/authorization process.  In this post, I am going to talk about what I have learnt and how to use this process with the facebook graph api to post messages and upload images.</p>
+<p>In a OAuth process, there are usually three steps involved.  </p>
+<ol>
+<li>
+<p>Client (i.e. application) requests Server (i.e. facebook, twitter...) for temporary credentials (i.e. request token and secret)</p>
+</li>
+<li>
+<p>Client will redirect the Resource Owner (i.e. facebook account owner) to a url which the Server provides including temporary credentials.  At this page, the Server will ask the Resource Owner if Client is allowed to access the Resource Owner's information.  If it is allows, go to next step.</p>
+</li>
+<li>
+<p>Server will redirect the Resource Owner back to the Client with a code or verifier.  The Client will then use this code and communicate with Serer to exchange for access credentials (i.e. access token and secret).  After getting this access token, Client can act on behalf of the Resource Owner.</p>
+</li>
+</ol>
+<p>Here is the <a href="http://hueniverse.com/oauth/">link</a> for more detail information about OAuth.</p>
+<p>Let's see how it works with facebook api.  In order to work with facebook api, we needs to go to <a href="https://developers.facebook.com/apps">developers.facebook.com/apps</a> to create an application.</p>
+<p><img alt="facebook_app" src="/images/facebook_oauth.jpg" /> </p>
+<p>The <strong><em>App ID</em></strong>, <strong><em>App Secret</em></strong>, and <strong><em>Site URL</em></strong> are the information that is used during the OAuth process.  The <strong><em>App ID</em></strong> and <strong><em>App Secret</em></strong> are assigned by facebook to this application (Client in terms of OAuth process).  The <strong><em>Site URL</em></strong> are the information provided by the application so that facebook will know how to redirect the Resource Owner to the application after at the last step of the OAuth process.</p>
+<p>Here is the code snippet for the OAuth process:</p>
+<p><strong>a.</strong>   Gather all the useful information.  redirect_uri, consumer_key, and consumer_secret are associated with <strong><em>App ID</em></strong>, <strong><em>App Secret</em></strong>, and <strong><em>Site URL</em></strong>.  One thing is important is that those infomration have to be exactly the same.  For example, the redirect_uri has to be exactly the same.  It cannot be http://localhost:8000.</p>
+<div class="highlight"><pre><span class="k">class</span> <span class="nc">Config</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">redirect_uri</span> <span class="o">=</span> <span class="s">&#39;http://localhost:8000/&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">oauth_url</span> <span class="o">=</span> <span class="s">&#39;https://www.facebook.com/dialog/oauth&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">access_token_url</span> <span class="o">=</span> <span class="s">&#39;https://graph.facebook.com/oauth/access_token&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">consumer_key</span> <span class="o">=</span> <span class="s">&#39;502---------&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">consumer_secret</span> <span class="o">=</span> <span class="s">&#39;8cf---------------&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">access_token</span><span class="o">=</span><span class="s">&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">graph_url</span> <span class="o">=</span> <span class="s">&#39;https://graph.facebook.com/&#39;</span>
+</pre></div>
+
+
+<p><strong>b.</strong>  Create a url so that the user could go to get and request for a code (Note: it is a bit different for facebook since the step 1 of the OAuth process is kinda skipped)  The following code will print out a url.  This url will include client_id, client_secret, redirect_uri, and scope.  The facebook api is more restrictive about what permission is required for individual actions.  <strong><em>publish_actions</em></strong> is used for posting messages and photos on the user's wall and <strong><em>user_photos</em></strong> is used to query the user's albums.</p>
+<div class="highlight"><pre><span class="n">scope</span><span class="o">=</span> <span class="p">[</span><span class="s">&#39;publish_actions&#39;</span><span class="p">,</span> <span class="s">&#39;user_photos&#39;</span><span class="p">]</span>
+<span class="n">qs</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s">&#39;client_id&#39;</span><span class="p">:</span> <span class="n">conf</span><span class="o">.</span><span class="n">consumer_key</span><span class="p">,</span>
+    <span class="s">&#39;client_secret&#39;</span><span class="p">:</span> <span class="n">conf</span><span class="o">.</span><span class="n">consumer_secret</span><span class="p">,</span>
+    <span class="n">redirect_uri</span><span class="s">&#39;: conf.redirect_uri,</span>
+        <span class="s">&#39;scope&#39;</span><span class="p">:</span> <span class="s">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">scope</span><span class="p">)</span>
+        <span class="p">}</span>
+
+<span class="k">print</span> <span class="s">&#39;Please go here and authorize: </span><span class="si">%s</span><span class="s">?</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">conf</span><span class="o">.</span><span class="n">oauth_url</span><span class="p">,</span> <span class="n">urllib</span><span class="o">.</span><span class="n">urlencode</span><span class="p">(</span><span class="n">qs</span><span class="p">))</span>
+<span class="n">code</span> <span class="o">=</span> <span class="nb">raw_input</span><span class="p">(</span><span class="s">&#39;Please input code&#39;</span><span class="p">)</span>
+</pre></div>
+
+
+<p><strong>c.</strong>  After the user goes to this url and accepts the permission, facebook will redirect the user back to the redirect_uri with a <strong><em>code</em></strong>.  This <strong><em>code</em></strong> is needed for the Client to exchange for the access token.  Usually the application will catch this code through the http request.  I am just using a script, that's why I just copy it out from my browser and enter it into my script.</p>
+<p><strong>d.</strong>  After getting the temporary code, the Client will need to exchange it at the Server for the access credentials.  In this code snippet, I am using the <a href="docs.python-requests.org/">python requests</a> which is a pretty handy library.  The <strong><em>access code</em></strong> will be returned in the GET response.  </p>
+<div class="highlight"><pre><span class="n">qs</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s">&#39;client_id&#39;</span><span class="p">:</span> <span class="n">conf</span><span class="o">.</span><span class="n">consumer_key</span><span class="p">,</span>
+        <span class="s">&#39;client_secret&#39;</span><span class="p">:</span> <span class="n">conf</span><span class="o">.</span><span class="n">consumer_secret</span><span class="p">,</span>
+        <span class="s">&#39;redirect_uri&#39;</span><span class="p">:</span> <span class="n">conf</span><span class="o">.</span><span class="n">redirect_uri</span><span class="p">,</span>
+        <span class="s">&#39;code&#39;</span><span class="p">:</span> <span class="n">code</span>
+         <span class="p">}</span>
+
+<span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">conf</span><span class="o">.</span><span class="n">access_token_url</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">qs</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">200</span><span class="p">:</span>
+        <span class="n">content</span> <span class="o">=</span> <span class="n">urlparse</span><span class="o">.</span><span class="n">parse_qs</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">content</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;access_token&#39;</span><span class="p">):</span>
+                <span class="n">conf</span><span class="o">.</span><span class="n">access_token</span> <span class="o">=</span> <span class="n">content</span><span class="p">[</span><span class="s">&#39;access_token&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+</pre></div>
+
+
+<p><strong>e.</strong>  To post messages and photos to facebook, I use the facebook graph api with the access code.  The <strong><em>access code</em></strong> will be part of url and the messages and photos will be the data in the http POST request.</p>
+<div class="highlight"><pre><span class="c"># post message</span>
+<span class="n">graph_url</span> <span class="o">=</span> <span class="n">conf</span><span class="o">.</span><span class="n">graph_url</span> <span class="o">+</span> <span class="s">&#39;me/feed&#39;</span> <span class="o">+</span> <span class="s">&#39;?access_token=&#39;</span> <span class="o">+</span> <span class="n">conf</span><span class="o">.</span><span class="n">access_token</span>
+<span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;message&#39;</span><span class="p">:</span> <span class="n">msg</span><span class="p">}</span>
+<span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">graph_url</span><span class="p">,</span> <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="p">)</span>
+
+<span class="c"># post photo</span>
+<span class="n">graph_url</span> <span class="o">=</span> <span class="n">conf</span><span class="o">.</span><span class="n">graph_url</span> <span class="o">+</span> <span class="s">&#39;me/photos&#39;</span> <span class="o">+</span> <span class="s">&#39;?access_token=&#39;</span> <span class="o">+</span> <span class="n">conf</span><span class="o">.</span><span class="n">access_token</span>
+<span class="n">photo</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">path_to_photo</span><span class="p">,</span> <span class="s">&#39;rb&#39;</span><span class="p">)</span>
+<span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;message&#39;</span><span class="p">:</span> <span class="n">msg</span><span class="p">}</span>
+<span class="n">files</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;source&#39;</span><span class="p">:</span> <span class="n">photo</span><span class="p">}</span>
+<span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">graph_url</span><span class="p">,</span> <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="p">,</span> <span class="n">files</span><span class="o">=</span><span class="n">files</span><span class="p">)</span>
+</pre></div>
+
+
+<p>If you are interested at the example, you could find an example at my <a href="https://github.com/kachon/oauth_example/">repository</a>.</p>
+			
+			<a href="https://twitter.com/share" class="twitter-share-button" data-via="" data-lang="en" data-size="large" data-related="">Tweet</a>
+			<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+						
+						
+		</div>
+	
+	<div class="meta wrapper">
+	<time datetime="2013-07-04T00:00:00" pubdate>Thu 04 July 2013</time>
+	<ul class="tag clearfix">
+		<li><a href="/category/oauth.html">OAuth</a></li>
+			<li><a href="/tag/oauth.html">OAuth</a></li>
+			<li><a href="/tag/facebook-api.html">facebook api</a></li>
+			<li><a href="/tag/python-requests.html">Python Requests</a></li>
+		</ul>
+	</div>	</article>	
+</div>
+	
+		
+<footer class="clearfix">
+	<div class="wrapper pages">
+		<ul class="nav">
+					<li><a href="/pages/about-me.html">About me</a></li>
+					<li><a href="/archives.html">Archive</a></li>
+		</ul>
+	</div>
+	
+	<div class="copy wrapper">
+		<ul class="social">
+						<li><a href="http://github.com/kachon">GitHub</a></li>
+						<li><a href="https://twitter.com/kachon_lei">Twitter</a></li>
+					</ul>
+	
+		<p role="contentinfo">© 2012 KaChon Lei<br>
+		Proudly powered by <a href="http://alexis.notmyidea.org/pelican/">Pelican</a>.</p>
+	</div>
+</footer>
+	
+	<script>
+	  var _gaq=[['_setAccount',''],['_trackPageview']];
+	  (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+	  g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+	  s.parentNode.insertBefore(g,s)}(document,'script'));
+	</script>
+</body>
+</html>
