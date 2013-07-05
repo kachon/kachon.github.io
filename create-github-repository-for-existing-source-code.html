@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="">	
+<head>
+	<meta charset="utf-8"/>
+	<title>Create GitHub repository for existing source code - KaChon's Notes</title>	
+	<meta name="author" content="KaChon Lei">
+	
+	<meta name="HandheldFriendly" content="True">
+	<meta name="MobileOptimized" content="320">
+	<meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0">
+	
+	<link href='http://fonts.googleapis.com/css?family=Droid+Sans:700,400|Droid+Sans+Mono' rel='stylesheet' type='text/css'>
+	<link rel="stylesheet" href="/theme/css/main.css" type="text/css" />
+	<link rel="stylesheet" href="/theme/css/slate.css" />		
+	<!--[if lt IE 9]>
+		<script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+	
+			
+	<link href="/" type="application/atom+xml" rel="alternate" title="KaChon's Notes ATOM Feed" />
+	</head>
+	
+<body>		
+	<header class="clearfix" role="banner">
+		<div class="wrapper">
+			<h1 class="huge"><a href="">KaChon's Notes</a></h1>
+		</div>
+	</header>
+	
+	<div role="main" class="content clearfix">	
+	<article>
+		<div class="post wrapper">
+			<h1>Create GitHub repository for existing source code</h1>
+			<p>Here are the steps for creating a GitHub repository for existing source code.</p>
+<p><strong>a.</strong>  Create a repository at GitHub and get the corresponding url for it (i.e. https://github.com/kachon/oauth_example.git)</p>
+<p><strong>b.</strong>  Issue <strong><em>git init</em></strong> at local directory</p>
+<p><strong>c.</strong>  Issue <strong><em>git add .</em></strong> at local directory to stage all the files</p>
+<p><strong>d.</strong>  Issue <strong><em>git commit -m 'first commit'</em></strong> at local directory to commit all the files</p>
+<p><strong>e.</strong>  Issue <strong><em>git remote add origin https://github.com/kachon/oauth_example.git</em></strong> to attach the local repository to remote repository </p>
+<p><strong>f.</strong>  Issue <strong><em>git pull origin master</em></strong> to pull any new files created by GitHub</p>
+<p><strong>g.</strong>  Issue <strong><em>git push origin master</em></strong> to push all files to GitHub</p>
+<p>Done!</p>
+			
+			<a href="https://twitter.com/share" class="twitter-share-button" data-via="" data-lang="en" data-size="large" data-related="">Tweet</a>
+			<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+						
+						
+		</div>
+	
+	<div class="meta wrapper">
+	<time datetime="2013-07-04T00:00:00" pubdate>Thu 04 July 2013</time>
+	<ul class="tag clearfix">
+		<li><a href="/category/github.html">github</a></li>
+			<li><a href="/tag/github.html">github</a></li>
+			<li><a href="/tag/git.html">git</a></li>
+		</ul>
+	</div>	</article>	
+</div>
+	
+		
+<footer class="clearfix">
+	<div class="wrapper pages">
+		<ul class="nav">
+					<li><a href="/archives.html">Archive</a></li>
+		</ul>
+	</div>
+	
+	<div class="copy wrapper">
+		<ul class="social">
+						<li><a href="http://github.com/kachon">GitHub</a></li>
+						<li><a href="https://twitter.com/kachon_lei">Twitter</a></li>
+					</ul>
+	
+		<p role="contentinfo">© 2012 KaChon Lei<br>
+		Proudly powered by <a href="http://alexis.notmyidea.org/pelican/">Pelican</a>.</p>
+	</div>
+</footer>
+	
+	<script>
+	  var _gaq=[['_setAccount',''],['_trackPageview']];
+	  (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+	  g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+	  s.parentNode.insertBefore(g,s)}(document,'script'));
+	</script>
+</body>
+</html>
